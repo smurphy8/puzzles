@@ -1,0 +1,109 @@
+* Problem Statement
+
+There are 12 coins which you bought for 8 coins.  
+You found out there was a fake so you can't use any until you figure out which one is a fake.
+You can use the city scale to weigh the coin to see if it is lighter or heavier than the real ones. (you know it will be)
+But this scale costs 1 coin per use (which you will only have to pay when done).
+To break even, you need to figure out which coin is fake in no more than 3 moves.
+
+* Problem Formalism 
+
+** measurement States
+*** R Right side heavier
+*** L Left  side heavier
+*** 0 Both  sides are the same    
+
+
+**  State Table
+
+| Measurement 1 | Measurement 2 | Measurement 3 | State # | Coin # | Decided y/n |
+|---------------+---------------+---------------+---------+--------+-------------|
+| R             | R             | 0             |       1 |      1 | [x]         |
+| R             | R             | L             |       2 |      2 | [x]         |
+| R             | 0             | R             |       3 |      3 | [x]         |
+| R             | 0             | 0             |       4 |      4 | [x]         |
+| R             | 0             | L             |       5 |      5 | [x]         |
+| R             | L             | R             |       6 |      6 | [x]         |
+| R             | L             | 0             |       7 |      7 | [x]         |
+| R             | L             | L             |       8 |      8 | [x]         |
+| 0             | R             | R             |       9 |      9 | [x]         |
+| 0             | R             | 0             |      10 |     10 | [x]         |
+| 0             | R             | L             |      11 |     11 | [x]         |
+| 0             | 0             | R             |      12 |     12 | [ ]         |
+| 0             | 0             | L             |      13 |        | [ ]         |
+| 0             | L             | R             |      14 |        | [ ]         |
+| 0             | L             | 0             |      15 |        | [ ]         |
+| 0             | L             | L             |      16 |        | [ ]         |
+| L             | R             | R             |      17 |        | [ ]         |
+| L             | R             | 0             |      18 |        | [ ]         |
+| L             | R             | L             |      19 |        | [ ]         |
+| L             | 0             | R             |      20 |        | [ ]         |
+| L             | 0             | 0             |      21 |        | [ ]         |
+| L             | 0             | L             |      22 |        | [ ]         |
+| L             | L             | R             |      23 |        | [ ]         |
+| L             | L             | 0             |      24 |        | [ ]         |
+|               |               |               |         |        |             |
+
+
+** Extra States?
+| R | R | R | ? |
+| L | L | L | ? |
+
+
+
+
+
+
+* Solution Distribution
+** Incorrect Simple assignment!
+| Measurement # | LHS       | RHS              |
+|---------------+-----------+------------------|
+|             1 |           | [1,2,3,4,5,6,7,8 |
+|             2 | [6,7,8    | [1,2,9,10,11     |
+|             3 | [2,5,8,11 | [3,6,9,12        |
+
+** Balanced assignment
++ I forgot that balance is also a constraint!
+++ This means that each measurement must have the property of balancing if the coins were even 
+   the max on one side is then 6
+
+*** Distributed State Table
+
+| Measurement 1 | Measurement 2 | Measurement 3 | State # | Coin # | Decided y/n |
+|---------------+---------------+---------------+---------+--------+-------------|
+| R             | R             | 0             |       1 | 1H     | [x]         |
+| L             | L             | 0             |      24 | 1L     | [x]         |
+| R             | R             | L             |       2 | 2H     | [x]         |
+| L             | L             | R             |      23 | 2L     | [x]         |
+| R             | 0             | R             |       3 | 3H     | [x]         |
+| L             | 0             | L             |      22 | 3L     | [x]         |
+| R             | 0             | 0             |       4 | 4H     | [x]         |
+| L             | 0             | 0             |      21 | 4L     | [x]         |
+| L             | 0             | R             |      20 | 5H     | [x]         |
+| R             | 0             | L             |       5 | 5L     | [x]         |
+| L             | R             | L             |      19 | 6H     | [x]         |
+| R             | L             | R             |       6 | 6L     | [x]         |
+| L             | R             | 0             |      18 | 7H     | [x]         |
+| R             | L             | 0             |       7 | 7L     | [x]         |
+| L             | L             | L             |      17 | 8H     | [x]         |
+| R             | R             | R             |       8 | 8L     | [x]         |
+| 0             | L             | L             |      16 | 9H     | [x]         |
+| 0             | R             | R             |       9 | 9L     | [x]         |
+| 0             | L             | 0             |      15 | 10H    | [x]         |
+| 0             | R             | 0             |      10 | 10L    | [x]         |
+| 0             | R             | L             |      11 | 11L    | [x]         |
+| 0             | L             | R             |      14 | 11H    | [x]         |
+| 0             | 0             | R             |      12 | 12H    | [x]         |
+| 0             | 0             | L             |      13 | 12L    | [x]         |
+
+
+**** Extra States?
+| L | R | R | ? |
+| R | L | L | ? |
+
+*** Another Assignment
+| Measurement # | LHS         | RHS        | Off          |
+|---------------+-------------+------------+--------------|
+|             1 | [5,6,7,8]   | [1,2,3,4]  | [9,10,11,12] |
+|             2 | [8,9,10,11] | [1,2,6,7]  | [3,4,5,12]   |
+|             3 | [2,6,8,9    | [3,5,11,12 | [1,4,7,10]   |
